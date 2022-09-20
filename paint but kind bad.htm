@@ -1,0 +1,410 @@
+
+<html>
+    <head>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+/* make a painting software */
+var canvas = document.createElement('canvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+document.body.appendChild(canvas);
+var ctx = canvas.getContext('2d');
+var mouseDown = false;
+canvas.addEventListener('mousedown', function(e) {
+  mouseDown = true;
+  ctx.beginPath();
+  ctx.moveTo(e.clientX, e.clientY);
+});
+canvas.addEventListener('mouseup', function(e) {
+  mouseDown = false;
+});
+canvas.addEventListener('mousemove', function(e) {
+  if (mouseDown) {
+    ctx.lineTo(e.clientX, e.clientY);
+    ctx.stroke();
+  }
+});
+
+/* make a color selection screen */
+var colorPicker = document.createElement('input');
+colorPicker.type = 'color';
+colorPicker.value = '#000000';
+colorPicker.addEventListener('change', function(e) {
+  ctx.strokeStyle = colorPicker.value;
+});
+document.body.appendChild(colorPicker);
+
+/* add a fill button */
+var fillButton = document.createElement('button');
+fillButton.innerHTML = 'Fill';
+fillButton.addEventListener('click', function(e) {
+  ctx.fillStyle = colorPicker.value;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+document.body.appendChild(fillButton);
+
+/* add a eraser */
+var eraserButton = document.createElement('button');
+eraserButton.innerHTML = 'Eraser';
+eraserButton.addEventListener('click', function(e) {
+  ctx.strokeStyle = '#ffffff';
+});
+document.body.appendChild(eraserButton);
+
+/* make a size selction screen */
+var sizePicker = document.createElement('input');
+sizePicker.type = 'range';
+sizePicker.min = 1;
+sizePicker.max = 100;
+sizePicker.value = 10;
+sizePicker.addEventListener('change', function(e) {
+  ctx.lineWidth = sizePicker.value;
+});
+document.body.appendChild(sizePicker);
+
+/* add a import image screen */
+var imagePicker = document.createElement('input');
+imagePicker.type = 'file';
+imagePicker.addEventListener('change', function(e) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(imagePicker.files[0]);
+});
+document.body.appendChild(imagePicker);
+
+/* make a save screen */
+var saveButton = document.createElement('button');
+saveButton.innerHTML = 'Save';
+saveButton.addEventListener('click', function(e) {
+  var link = document.createElement('a');
+  link.href = canvas.toDataURL();
+  link.download = 'painting.png';
+  link.click();
+});
+document.body.appendChild(saveButton);
+/* make a download button */
+var downloadButton = document.createElement('button');
+downloadButton.innerHTML = 'Download';
+downloadButton.addEventListener('click', function(e) {
+  var link = document.createElement('a');
+  link.href = 'https://github.com/jamesqquick/Build-Your-Own-X/archive/master.zip';
+  link.download = 'Build-Your-Own-X.zip';
+  link.click();
+});
+document.body.appendChild(downloadButton);
+/* make the buttons be at the top */
+document.body.insertBefore(colorPicker, document.body.firstChild);
+document.body.insertBefore(fillButton, document.body.firstChild);
+document.body.insertBefore(eraserButton, document.body.firstChild);
+document.body.insertBefore(sizePicker, document.body.firstChild);
+document.body.insertBefore(imagePicker, document.body.firstChild);
+document.body.insertBefore(saveButton, document.body.firstChild);
+document.body.insertBefore(downloadButton, document.body.firstChild);
+
+/* add a shape button */
+var shapeButton = document.createElement('button');
+shapeButton.innerHTML = 'Shape';
+shapeButton.addEventListener('click', function(e) {
+  var shape = document.createElement('div');
+  shape.style.width = '100px';
+  shape.style.height = '100px';
+  shape.style.backgroundColor = colorPicker.value;
+  shape.style.position = 'absolute';
+  shape.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+  shape.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+  document.body.appendChild(shape);
+});
+document.body.insertBefore(shapeButton, document.body.firstChild);
+
+/* remove the download button */
+document.body.removeChild(downloadButton);
+
+/* change the shape button to change the shape of the pencil */
+shapeButton.innerHTML = 'Pencil Shape';
+shapeButton.addEventListener('click', function(e) {
+  ctx.lineCap = 'round';
+});
+
+/* make the buttons always visible */
+document.body.style.position = 'fixed';
+document.body.style.top = '0px';
+document.body.style.left = '0px';
+
+/* remove the shape button */
+document.body.removeChild(shapeButton);
+
+/* make a option to put the whole canvas rainbow colored */
+var rainbowButton = document.createElement('button');
+rainbowButton.innerHTML = 'Rainbow';
+rainbowButton.addEventListener('click', function(e) {
+  var rainbow = document.createElement('div');
+  rainbow.style.width = '100%';
+  rainbow.style.height = '100%';
+  rainbow.style.background = 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)';
+  rainbow.style.position = 'absolute';
+  rainbow.style.top = '0px';
+  rainbow.style.left = '0px';
+  document.body.appendChild(rainbow);
+});
+document.body.insertBefore(rainbowButton, document.body.firstChild);
+
+/* make the buttons be visible while the rainbow option is on */
+rainbowButton.addEventListener('click', function(e) {
+  document.body.style.zIndex = '1';
+});
+
+/* make every change visible in console */
+var log = function(message) {
+  var log = document.createElement('div');
+  log.innerHTML = message;
+  document.body.appendChild(log);
+};
+
+/* make a menu screen */
+var menuButton = document.createElement('button');
+menuButton.innerHTML = 'Menu';
+menuButton.addEventListener('click', function(e) {
+  var menu = document.createElement('div');
+  menu.style.width = '100%';
+  menu.style.height = '100%';
+  menu.style.backgroundColor = '#000000';
+  menu.style.position = 'absolute';
+  menu.style.top = '0px';
+  menu.style.left = '0px';
+  menu.style.opacity = '0.5';
+  document.body.appendChild(menu);
+});
+document.body.insertBefore(menuButton, document.body.firstChild);
+
+/* move the save button to the menu */
+document.body.removeChild(saveButton);
+menuButton.addEventListener('click', function(e) {
+  var menu = document.body.lastChild;
+  menu.appendChild(saveButton);
+});
+
+/* make the save button centered */
+saveButton.style.position = 'absolute';
+saveButton.style.top = '50%';
+saveButton.style.left = '50%';
+saveButton.style.transform = 'translate(-50%, -50%)';
+
+/* make a close menu option in the menu */
+var closeMenuButton = document.createElement('button');
+closeMenuButton.innerHTML = 'Close Menu';
+closeMenuButton.addEventListener('click', function(e) {
+  document.body.removeChild(document.body.lastChild);
+});
+menuButton.addEventListener('click', function(e) {
+  var menu = document.body.lastChild;
+  menu.appendChild(closeMenuButton);
+});
+
+/* make the close menu button centered */
+closeMenuButton.style.position = 'absolute';
+closeMenuButton.style.top = '50%';
+closeMenuButton.style.left = '50%';
+closeMenuButton.style.transform = 'translate(-50%, -50%)';
+
+/* make the close menu button green */
+closeMenuButton.style.backgroundColor = '#00ff00';
+
+/* move the save button up */
+saveButton.style.top = '40%';
+
+/* make the buttons look nicer */
+var buttons = document.getElementsByTagName('button');
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].style.width = '100px';
+  buttons[i].style.height = '50px';
+  buttons[i].style.backgroundColor = '#000000';
+  buttons[i].style.color = '#ffffff';
+  buttons[i].style.border = 'none';
+  buttons[i].style.borderRadius = '5px';
+  buttons[i].style.fontSize = '20px';
+}
+
+/* make the buttons smaller */
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].style.width = '50px';
+  buttons[i].style.height = '25px';
+  buttons[i].style.fontSize = '10px';
+}
+
+/* add a back button to the rainbow screen */
+rainbowButton.addEventListener('click', function(e) {
+  var backButton = document.createElement('button');
+  backButton.innerHTML = 'Back';
+  backButton.addEventListener('click', function(e) {
+    document.body.removeChild(document.body.lastChild);
+  });
+  document.body.lastChild.appendChild(backButton);
+});
+
+/* add credits to the rainbow screen */
+rainbowButton.addEventListener('click', function(e) {
+  var credits = document.createElement('div');
+  credits.innerHTML = 'Created by The nugget lord';
+  document.body.lastChild.appendChild(credits);
+});
+
+/* make a erase all button */
+var eraseAllButton = document.createElement('button');
+eraseAllButton.innerHTML = 'Erase All';
+eraseAllButton.addEventListener('click', function(e) {
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+document.body.insertBefore(eraseAllButton, document.body.firstChild);
+
+/* add a camera button */
+var cameraButton = document.createElement('button');
+cameraButton.innerHTML = 'Camera';
+cameraButton.addEventListener('click', function(e) {
+  var video = document.createElement('video');
+  video.width = window.innerWidth;
+  video.height = window.innerHeight;
+  video.autoplay = true;
+  document.body.appendChild(video);
+  navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
+    video.srcObject = stream;
+  });
+});
+document.body.insertBefore(cameraButton, document.body.firstChild);
+
+/* add a help shitty message */
+var helpButton = document.createElement('button');
+helpButton.innerHTML = 'Help';
+helpButton.addEventListener('click', function(e) {
+  var help = document.createElement('div');
+  help.innerHTML = 'This is a shitty message';
+  document.body.appendChild(help);
+});
+document.body.insertBefore(helpButton, document.body.firstChild);
+
+/* write to console the shitty mesage */
+helpButton.addEventListener('click', function(e) {
+  console.log('This is a shitty message');
+});
+
+/* write console to a text bubble that apears when you click help */
+helpButton.addEventListener('click', function(e) {
+  var help = document.createElement('div');
+  help.innerHTML = 'This is a shitty message';
+  document.body.appendChild(help);
+});
+
+var colors = ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+for (var i = 0; i < colors.length; i++) {
+  var color = document.createElement('button');
+  color.style.width = '50px';
+  color.style.height = '25px';
+  color.style.backgroundColor = colors[i];
+  color.style.border = 'none';
+  color.style.outline = 'none';
+  color.addEventListener('click', (function(colorCopy) {
+    return function(e) {
+      ctx.strokeStyle = colorCopy;
+    };
+  })(colors[i]));
+  document.body.insertBefore(color, document.body.firstChild);
+}
+
+var sizeUpButton = document.createElement('button');
+sizeUpButton.innerHTML = '+';
+sizeUpButton.addEventListener('click', function(e) {
+  sizePicker.value++;
+  ctx.lineWidth = sizePicker.value;
+});
+document.body.insertBefore(sizeUpButton, document.body.firstChild);
+
+sizeUpButton.style.width = '50px';
+sizeUpButton.style.height = '25px';
+sizeUpButton.style.backgroundColor = '#000000';
+sizeUpButton.style.color = '#ffffff';
+sizeUpButton.style.border = 'none';
+sizeUpButton.style.borderRadius = '5px';
+sizeUpButton.style.fontSize = '20px';
+
+imagePicker.style.width = '50px';
+imagePicker.style.height = '25px';
+imagePicker.style.backgroundColor = '#000000';
+imagePicker.style.color = '#ffffff';
+imagePicker.style.border = 'none';
+imagePicker.style.borderRadius = '5px';
+imagePicker.style.fontSize = '20px';
+
+helpButton.style.width = '50px';
+helpButton.style.height = '25px';
+helpButton.style.backgroundColor = '#000000';
+helpButton.style.color = '#ffffff';
+helpButton.style.border = 'none';
+helpButton.style.borderRadius = '5px';
+helpButton.style.fontSize = '20px';
+
+menuButton.style.backgroundColor = '#ffff00';
+
+eraseAllButton.style.width = '50px';
+eraseAllButton.style.height = '25px';
+eraseAllButton.style.backgroundColor = '#000000';
+eraseAllButton.style.color = '#ffffff';
+eraseAllButton.style.border = 'none';
+eraseAllButton.style.borderRadius = '5px';
+eraseAllButton.style.fontSize = '20px';
+
+cameraButton.style.width = '50px';
+cameraButton.style.height = '25px';
+cameraButton.style.backgroundColor = '#000000';
+cameraButton.style.color = '#ffffff';
+cameraButton.style.border = 'none';
+cameraButton.style.borderRadius = '5px';
+cameraButton.style.fontSize = '20px';
+
+sizePicker.style.width = '100px';
+sizePicker.style.height = '25px';
+sizePicker.style.backgroundColor = '#000000';
+sizePicker.style.color = '#ffffff';
+sizePicker.style.border = 'none';
+sizePicker.style.borderRadius = '5px';
+sizePicker.style.fontSize = '20px';
+
+var colorPickerButton = document.createElement('button');
+colorPickerButton.innerHTML = 'Color Picker';
+colorPickerButton.addEventListener('click', function(e) {
+  var colorPicker = document.createElement('input');
+  colorPicker.type = 'color';
+  colorPicker.value = '#000000';
+  colorPicker.addEventListener('change', function(e) {
+    ctx.strokeStyle = colorPicker.value;
+  });
+  document.body.appendChild(colorPicker);
+});
+document.body.insertBefore(colorPickerButton, document.body.firstChild);
+
+colorPickerButton.style.width = '50px';
+colorPickerButton.style.height = '25px';
+colorPickerButton.style.backgroundColor = '#000000';
+colorPickerButton.style.color = '#ffffff';
+colorPickerButton.style.border = 'none';
+colorPickerButton.style.borderRadius = '5px';
+colorPickerButton.style.fontSize = '20px';
+});
+        </script>
+    </head>
+    <body style="margin: 0;">
+        <div style="background-color: black; position: fixed; bottom: 0; width: 100%; height: 20px; padding: 20px; opacity: .85; z-index: 1000;">
+            <svg id="Layer_1" data-name="Layer 1" height="40px" width="40px" style="top: -8px;
+            position: relative;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><defs><style>.cls-1{fill:#fff;}</style></defs><title>openai-symbol-flat-white</title><path class="cls-1" d="M617.24,354a126.36,126.36,0,0,0-10.86-103.79,127.8,127.8,0,0,0-137.65-61.32,126.36,126.36,0,0,0-95.31-42.49A127.81,127.81,0,0,0,251.5,234.89,126.4,126.4,0,0,0,167,296.19a127.82,127.82,0,0,0,15.72,149.86,126.36,126.36,0,0,0,10.86,103.79,127.81,127.81,0,0,0,137.65,61.32,126.36,126.36,0,0,0,95.31,42.49A127.81,127.81,0,0,0,548.5,565.11,126.4,126.4,0,0,0,633,503.81,127.82,127.82,0,0,0,617.24,354ZM426.58,620.49a94.79,94.79,0,0,1-60.85-22c.77-.42,2.12-1.16,3-1.7l101-58.34a16.42,16.42,0,0,0,8.3-14.37V381.69l42.69,24.65a1.52,1.52,0,0,1,.83,1.17V525.43A95.18,95.18,0,0,1,426.58,620.49ZM222.34,533.26A94.74,94.74,0,0,1,211,469.56c.75.45,2.06,1.25,3,1.79l101,58.34a16.44,16.44,0,0,0,16.59,0l123.31-71.2v49.3a1.53,1.53,0,0,1-.61,1.31L352.19,568.05A95.16,95.16,0,0,1,222.34,533.26ZM195.77,312.77a94.71,94.71,0,0,1,49.48-41.68c0,.87-.05,2.41-.05,3.48V391.25a16.41,16.41,0,0,0,8.29,14.36L376.8,476.8l-42.69,24.65a1.53,1.53,0,0,1-1.44.13l-102.11-59A95.16,95.16,0,0,1,195.77,312.77Zm350.74,81.62L423.2,323.19l42.69-24.64a1.53,1.53,0,0,1,1.44-.13l102.11,58.95a95.08,95.08,0,0,1-14.69,171.55c0-.88,0-2.42,0-3.49V408.75A16.4,16.4,0,0,0,546.51,394.39ZM589,330.44c-.75-.46-2.06-1.25-3-1.79L485,270.31a16.46,16.46,0,0,0-16.59,0l-123.31,71.2v-49.3a1.53,1.53,0,0,1,.61-1.31L447.81,232A95.07,95.07,0,0,1,589,330.44ZM321.89,418.31l-42.7-24.65a1.52,1.52,0,0,1-.83-1.17V274.57a95.07,95.07,0,0,1,155.9-73c-.77.42-2.11,1.16-3,1.7l-101,58.34a16.41,16.41,0,0,0-8.3,14.36Zm23.19-50L400,336.59l54.92,31.7v63.42L400,463.41l-54.92-31.7Z"/></svg>
+            <div style="display: inline-block; color: white; vertical-align: top; margin-top: 4px; font-family: Helvetica, sans-serif;">
+                Code generated by <a style="color: white; text-decoration: none; font-weight: bold;" href="https://openai.com/blog/openai-codex/">OpenAI Codex</a>
+            </div>
+        </div>
+    </body>
+</html>
